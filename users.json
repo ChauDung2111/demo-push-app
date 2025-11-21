@@ -2,6 +2,11 @@
   "Dũng": {
     "email": "ngocdungchau1210@gmail.com",
     "password": "Dung2111@",
+    "remember": false
+  },
+  "ok": {
+    "email": "abc12@gmail.com",
+    "password": "1234Ok@",
     "remember": true
   }
 }

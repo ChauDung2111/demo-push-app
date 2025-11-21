@@ -15,15 +15,7 @@ def load_user_data(file, username):
             data = json.load(f)
         except:
             return {}
-    if isinstance(data, dict):
-        return data.get(username, {})
-    if isinstance(data, list):
-        for item in data:
-            if isinstance(item, dict):
-                if item.get("username") == username:
-                    return item
-        return {}
-    return {}
+    return data.get(username, {})
 
 def open_interface(pw_win, username):
     pw_win.withdraw()

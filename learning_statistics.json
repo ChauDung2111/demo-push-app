@@ -7,5 +7,14 @@
       "pass_rate": "(100%)",
       "rank": "Xuất Sắc"
     }
+  },
+  "ok": {
+    "2025-2026_sem1": {
+      "school_year": "2025-2026",
+      "semester": "1",
+      "gpa": 4.0,
+      "pass_rate": "(100%)",
+      "rank": "Xuất Sắc"
+    }
   }
 }

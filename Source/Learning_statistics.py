@@ -20,8 +20,6 @@ def load_user_courses(username):
             data = json.load(f)
         except:
             data = {}
-    if not isinstance(data, dict):
-        data = {}
     return data.get(username, {})
 
 def save_user_courses(username, courses_list):
@@ -31,8 +29,6 @@ def save_user_courses(username, courses_list):
             data = json.load(f)
         except:
             data = {}
-    if not isinstance(data, dict):
-        data = {}
     data[username] = courses_list
     with open(LEARNING_STATISTICS, "w", encoding="utf8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)

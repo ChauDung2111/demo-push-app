@@ -7,5 +7,14 @@
     "email": "a1@gmail.com",
     "sex": "Nam",
     "address": "Bình Định"
+  },
+  "ok": {
+    "avatar_path": "c:\\Users\\Nga\\Desktop\\App Students Care\\Images\\nv.png",
+    "name": "ok",
+    "mssv": "n2",
+    "dob": "1/1/2020",
+    "email": "ok1@gmail.com",
+    "sex": "Nam",
+    "address": "dfgh"
   }
 }

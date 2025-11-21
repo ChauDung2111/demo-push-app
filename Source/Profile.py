@@ -29,13 +29,7 @@ def load_profile_for_user(username):
             data = json.load(f)
         except:
             data = {}
-    if isinstance(data, dict):
-        return data.get(username, {})
-    if isinstance(data, list):
-        for item in data:
-            if isinstance(item, dict) and item.get("username") == username:
-                return item
-    return {}
+    return data.get(username, {})
 
 def save_profile_for_user(username, profile_dict):
     _ensure_profile_file()
@@ -44,12 +38,6 @@ def save_profile_for_user(username, profile_dict):
             data = json.load(f)
         except:
             data = {}
-    if isinstance(data, list):
-        tmp = {}
-        for item in data:
-            if isinstance(item, dict) and item.get("username"):
-                tmp[item["username"]] = item
-        data = tmp
     data[username] = profile_dict
     with open(PROFILE_FILE, "w", encoding="utf8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
