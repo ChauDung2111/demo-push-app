@@ -31,7 +31,7 @@ def load_user_courses(username):
             data = {}
     if not isinstance(data, dict):
         data = {}
-    return data.get(username, [])
+    return data.get(username, {})
 
 def save_user_courses(username, courses_list):
     _ensure_study_file()

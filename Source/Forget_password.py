@@ -74,7 +74,7 @@ def open_forget_password(pw_win):
             return
         found_user = None
         for username, info in users.items():
-            if name_or_email == username or name_or_email == info.get("email", ""):
+            if name_or_email == username or name_or_email == info["email"]:
                 found_user = username
                 break
         if not found_user:
@@ -94,14 +94,15 @@ def open_forget_password(pw_win):
         users[found_user]["password"] = new_pw
         save_users(users)
         msg.config(text="✅ Đổi mật khẩu thành công!", fg="green")
-        new_pw_entry.delete(0, END)
-        confirm_pw_entry.delete(0, END)
-        username_email_entry.delete(0, END)
+        
     Button(fpw, text="Reset", bg="blue", fg="white", font=('Arial', 12, 'bold'),
            command=reset_password).place(x=135, y=200)
     
     # =============================== Back to Login ===============================
     def back():
+        new_pw_entry.delete(0, END)
+        confirm_pw_entry.delete(0, END)
+        username_email_entry.delete(0, END)
         fpw.destroy()
         pw_win.deiconify()
         for widget in pw_win.winfo_children():

@@ -47,7 +47,7 @@ def save_profile_for_user(username, profile_dict):
     if isinstance(data, list):
         tmp = {}
         for item in data:
-            if isinstance(item, dict) and "username" in item:
+            if isinstance(item, dict) and item.get("username"):
                 tmp[item["username"]] = item
         data = tmp
     data[username] = profile_dict

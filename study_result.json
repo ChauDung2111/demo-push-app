@@ -1,1 +1,15 @@
-{}
+{
+  "Dũng": [
+    {
+      "course_code": "gt",
+      "course_name": "gt",
+      "semester": "1",
+      "credit": "1",
+      "attendance_score": "1",
+      "midterm_score": "1",
+      "final_score": "1",
+      "average_score": "1.0",
+      "school_year": "2025-2026"
+    }
+  ]
+}

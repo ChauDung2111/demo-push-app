@@ -62,7 +62,7 @@ for username, info in users.items():
 # ==== Login ====
 def login_acc():
     username_input = username_email_entry.get().strip()
-    password_input = password_entry.get()
+    password_input = password_entry.get()   
     users = load_users()
     login_user = None
     for username, info in users.items():
