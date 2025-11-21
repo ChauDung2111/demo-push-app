@@ -146,7 +146,7 @@ def open_study_result(root, username):
             i.delete(0, END)
     # ========================================================== Save Json ==========================================================
     def save_json():
-        all_data = []
+        all_data = {}
         for item in tree.get_children():
             values = tree.item(item, "values")
             all_data.append(
