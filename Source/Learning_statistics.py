@@ -22,7 +22,7 @@ def load_user_courses(username):
             data = {}
     if not isinstance(data, dict):
         data = {}
-    return data.get(username, [])
+    return data.get(username, {})
 
 def save_user_courses(username, courses_list):
     _ensure_study_file()
@@ -68,9 +68,9 @@ def generate_feedback(username ,score_data):
     try:
         with open(LEARNING_STATISTICS, 'r', encoding="utf8") as f:
             data = json.load(f)
-            user_data = data.get(username, [])
+            user_data = data.get(username, {})
             if user_data:
-                gpa = float(user_data[-1].get("gpa", 0))
+                gpa = float(user_data.get("gpa", 0))
             else:
                 gpa = 0.0
     except:
@@ -85,24 +85,16 @@ def generate_feedback(username ,score_data):
     nhan_xet += f"Điểm GPA học kỳ 1 là **{gpa}**.\n"
     nhan_xet += (f"Điểm trung bình cao nhất là môn **{max_subjects_str}** với **{max_score}**.\n"
                  f"Bạn đã thể hiện sự nỗ lực và khả năng tốt ở lĩnh vực này.\n")
-    try:
-        with open(STUDY_RESULT, 'r', encoding="utf8") as f:
-            data = json.load(f)
-            course_average_score = data.get(username, [])
-    except (FileNotFoundError, json.JSONDecodeError):
-        course_average_score = []
     excellent, good, fair, average = [], [], [], []
-    for item in course_average_score:
-        avg = float(item.get("average_score", 0))
-        name = item.get("course_name", "Unknown")
-        if avg >= 9.0:
-            excellent.append((name, avg))
-        elif avg >= 8.0:
-            good.append((name, avg))
-        elif avg >= 6.5:
-            fair.append((name, avg))
+    for sub_name, avg_score in score_data.items():
+        if avg_score >= 9.0:
+            excellent.append((sub_name, avg_score))
+        elif avg_score >= 8.0:
+            good.append((sub_name, avg_score))
+        elif avg_score >= 6.5:
+            fair.append((sub_name, avg_score))
         else:
-            average.append((name, avg))
+            average.append((sub_name, avg_score))
     if excellent:
         nhan_xet += "Các môn Xuất sắc: " + ", ".join([s[0] for s in excellent]) + ". Thành tích học tập **RẤT TỐT**. Tiếp tục duy trì phong độ xuất sắc này và thử thách bản thân với những môn nâng cao!\n"
     if good:
@@ -195,12 +187,13 @@ def open_learning_statistics(root, username):
 
     # ========================================================== Load information on the treeview ==========================================================
     courses = load_user_courses(username)  # Get information by username
-    school_years = sorted({c.get("school_year") for c in courses})
-    semesters = sorted({c.get("semester") for c in courses})
-    all_data = []
+    course_list = list(courses.values())
+    school_years = sorted({c.get("school_year") for c in course_list})
+    semesters = sorted({c.get("semester") for c in course_list})
+    all_data = {}
     for year in school_years:
         for sem in semesters:
-            semesters_course = [c for c in courses if c.get("school_year")==year and c.get("semester")==sem]
+            semesters_course = [c for c in course_list if c.get("school_year")==year and c.get("semester")==sem]
             if not semesters_course:
                 continue
             gpa_sem = calculate_gpa4(semesters_course)
@@ -209,8 +202,14 @@ def open_learning_statistics(root, username):
             pass_rate = f"({passed/total*100:.0f}%)"
             rank = "Xuất Sắc" if gpa_sem >= 3.6 else "Giỏi" if gpa_sem >= 3.2 else "Khá" if gpa_sem >= 2.5 else "Trung bình"
             tree.insert("", "end", values=(year, sem, gpa_sem, pass_rate, rank))
-            stat_item = {"school_year": year, "semester": sem, "gpa": gpa_sem, "pass_rate": pass_rate, "rank": rank}
-            all_data.append(stat_item)
+            key = f"{year}_sem{sem}"
+            all_data[key] = {
+                "school_year": year, 
+                "semester": sem, 
+                "gpa": gpa_sem, 
+                "pass_rate": pass_rate, 
+                "rank": rank
+            }
     save_user_courses(username, all_data)
     # ==========================================================Frame chart==========================================================
     chart_frame = Frame(frame_content, bg="#f5f5f5")
@@ -220,8 +219,9 @@ def open_learning_statistics(root, username):
         nonlocal chart_widget
         if chart_widget is None:
             courses = load_user_courses(username)
-            course_names = [i.get("course_name", "Unknown") for i in courses]
-            average_scores = [float(i.get("average_score", 0)) for i in courses]
+            course_list = list(courses.values())
+            course_names = [i.get("course_name", "Unknown") for i in course_list]
+            average_scores = [float(i.get("average_score", 0)) for i in course_list]
 
             fig, ax = plt.subplots(figsize=(5.6, 3.68))
             ax.plot(course_names, average_scores, marker='o', color='red', linewidth=2)
@@ -251,13 +251,13 @@ def open_learning_statistics(root, username):
         try:
             with open(STUDY_RESULT, 'r', encoding="utf8") as f:
                 data = json.load(f)
-                score_data_list = data.get(username, [])
+                score_data_dict = data.get(username, {})
         except:
-            score_data_list = []
+            score_data_dict = {}
         score_data = {item.get("course_name", "Unknown"): float(item.get("average_score", 0)) 
-                  for item in score_data_list}
+                  for item in score_data_dict.values()}
         feeback = generate_feedback(username, score_data)
-        comment_text.delete('0.0', END)
+        comment_text.delete('1.0', END)
         comment_text.insert(END, feeback)
     button_feedback = Button(comment_frame, text="Hiển thị nhận xét", font=('Abadi', 10, 'bold'),bg="#f39c12", command=show_feedback)
     button_feedback.pack(pady=5)

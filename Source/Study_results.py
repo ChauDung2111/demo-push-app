@@ -149,7 +149,8 @@ def open_study_result(root, username):
         all_data = {}
         for item in tree.get_children():
             values = tree.item(item, "values")
-            all_data.append(
+            key = values[1]
+            all_data[key] = (
                 {
                 "course_code": values[0],
                 "course_name": values[1],
@@ -167,17 +168,17 @@ def open_study_result(root, username):
     # ====Load json->tree ====
     def load_inf():
         courses = load_user_courses(username)
-        for item in courses:
+        for courses_code, course_info in courses.items():
             tree.insert("","end", values=(
-                item["course_code"],
-                item["course_name"],
-                item["semester"],
-                item["credit"],
-                item["attendance_score"],
-                item["midterm_score"],
-                item["final_score"],
-                item.get("average_score", calculate_average_score(item["attendance_score"], item["midterm_score"], item["final_score"])),
-                item["school_year"]
+                course_info["course_code"],
+                course_info["course_name"],
+                course_info["semester"],
+                course_info["credit"],
+                course_info["attendance_score"],
+                course_info["midterm_score"],
+                course_info["final_score"],
+                course_info.get("average_score", calculate_average_score(course_info["attendance_score"], course_info["midterm_score"], course_info["final_score"])),
+                course_info["school_year"]
             ))
     # ======================= Delete record =======================
     def delete_record():
